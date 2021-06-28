@@ -31,6 +31,7 @@ void app_main(void)
 void gpio_driver_out_task(void *pvParameter)
 {
     uint8_t i;
+    uint8_t GPIO_level;
     GPIO_DriverRetVal_e GPIO_Driver_init_success;
     GPIO_DriverGPIOInit_s GPIO_pin_def_LED1;
 
@@ -42,15 +43,21 @@ void gpio_driver_out_task(void *pvParameter)
     ESP_LOGI(TAG, "GPIO Driver Init Done");
     ESP_LOGI(TAG, "Set GPIO Pin Level to High");
     gpioDriverSetPin_Level(&GPIO_pin_def_LED1, GPIO_DriverGPIOLevel_High);
+    gpioDriverReadPin(&GPIO_pin_def_LED1, &GPIO_level);
+    ESP_LOGI(TAG, "GPIO read level: %d", GPIO_level);
     vTaskDelay(PIN_TOGGLE_DELAY_MS / portTICK_RATE_MS);
     for(i=0;i<10;i++)
     {
         ESP_LOGI(TAG, "Toggle GPIO Pin Level");
         gpioDriverTogglePin(&GPIO_pin_def_LED1);
+        gpioDriverReadPin(&GPIO_pin_def_LED1, &GPIO_level);
+        ESP_LOGI(TAG, "GPIO read level: %d", GPIO_level);
         vTaskDelay(PIN_TOGGLE_DELAY_MS / portTICK_RATE_MS);        
     }
     ESP_LOGI(TAG, "Set GPIO Pin Level to Low");
     gpioDriverSetPin_Level(&GPIO_pin_def_LED1, GPIO_DriverGPIOLevel_Low);
+    gpioDriverReadPin(&GPIO_pin_def_LED1, &GPIO_level);
+    ESP_LOGI(TAG, "GPIO read level: %d", GPIO_level);
     vTaskDelay(PIN_TOGGLE_DELAY_MS / portTICK_RATE_MS);
     ESP_LOGI(TAG, "GPIO Driver DeInit");
     gpioDriverPinDeInit(&GPIO_pin_def_LED1);

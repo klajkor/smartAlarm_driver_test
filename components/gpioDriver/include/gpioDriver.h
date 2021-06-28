@@ -85,5 +85,5 @@ GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOInit_s* pGPIOPin_i);
 GPIO_DriverRetVal_e gpioDriverPinDeInit(GPIO_DriverGPIOInit_s* pGPIOPin_i);
 GPIO_DriverRetVal_e gpioDriverSetPin_Level(GPIO_DriverGPIOInit_s* pGPIOPin_i, GPIO_DriverGPIOLevel_e eGPIOLevel_i);
 GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOInit_s* pGPIOPin_i);
-//GPIO_DriverRetVal_e gpioDriverReadPin(uint32_t Pin_Port, uint32_t Pin_Number, uint8_t* pData_o);
+GPIO_DriverRetVal_e gpioDriverReadPin(GPIO_DriverGPIOInit_s* pGPIOPin_i, uint8_t* pData_o);
 

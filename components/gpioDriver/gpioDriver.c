@@ -95,3 +95,9 @@ GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOInit_s *pGPIOPin_i)
     }
     return driverRetVal;
 }
+
+GPIO_DriverRetVal_e gpioDriverReadPin(GPIO_DriverGPIOInit_s* pGPIOPin_i, uint8_t* pData_o)
+{
+    *pData_o = (uint8_t)gpio_get_level(pGPIOPin_i->GPIO_Pin_Number);
+    return GPIO_DriverRetVal_OK;
+}
