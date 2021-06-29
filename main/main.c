@@ -33,7 +33,7 @@ void gpio_driver_out_task(void *pvParameter)
     uint8_t i;
     uint8_t GPIO_level;
     GPIO_DriverRetVal_e GPIO_Driver_init_success;
-    GPIO_DriverGPIOInit_s GPIO_pin_def_LED1;
+    GPIO_DriverGPIOConfig_s GPIO_pin_def_LED1;
 
     ESP_LOGI(TAG, "GPIO Driver Init Start");
     GPIO_pin_def_LED1.GPIO_Pin_Port = 0;

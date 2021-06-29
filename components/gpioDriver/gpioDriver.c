@@ -1,6 +1,6 @@
 #include "gpioDriver.h"
 
-GPIO_DriverRetVal_e gpioDriverPinInit_Input(GPIO_DriverGPIOInit_s *pGPIOPin_i)
+GPIO_DriverRetVal_e gpioDriverPinInit_Input(GPIO_DriverGPIOConfig_s *pGPIOPin_i)
 {
     GPIO_DriverRetVal_e driverRetVal;
     driverRetVal = GPIO_DriverRetVal_OK;
@@ -8,7 +8,7 @@ GPIO_DriverRetVal_e gpioDriverPinInit_Input(GPIO_DriverGPIOInit_s *pGPIOPin_i)
     return driverRetVal;
 }
 
-GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOInit_s *pGPIOPin_i)
+GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOConfig_s *pGPIOPin_i)
 {
     GPIO_DriverRetVal_e driverRetVal;
     gpio_config_t gpio_conf;
@@ -38,7 +38,7 @@ GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOInit_s *pGPIOPin_i)
     return driverRetVal;
 }
 
-GPIO_DriverRetVal_e gpioDriverPinDeInit(GPIO_DriverGPIOInit_s *pGPIOPin_i)
+GPIO_DriverRetVal_e gpioDriverPinDeInit(GPIO_DriverGPIOConfig_s *pGPIOPin_i)
 {
     GPIO_DriverRetVal_e driverRetVal;
     gpio_config_t gpio_conf;
@@ -59,7 +59,7 @@ GPIO_DriverRetVal_e gpioDriverPinDeInit(GPIO_DriverGPIOInit_s *pGPIOPin_i)
     return driverRetVal;
 }
 
-GPIO_DriverRetVal_e gpioDriverSetPin_Level(GPIO_DriverGPIOInit_s *pGPIOPin_i, GPIO_DriverGPIOLevel_e eGPIOLevel_i)
+GPIO_DriverRetVal_e gpioDriverSetPin_Level(GPIO_DriverGPIOConfig_s *pGPIOPin_i, GPIO_DriverGPIOLevel_e eGPIOLevel_i)
 {
     GPIO_DriverRetVal_e driverRetVal;
     if (gpio_set_level(pGPIOPin_i->GPIO_Pin_Number, eGPIOLevel_i) == ESP_OK)
@@ -73,7 +73,7 @@ GPIO_DriverRetVal_e gpioDriverSetPin_Level(GPIO_DriverGPIOInit_s *pGPIOPin_i, GP
     return driverRetVal;
 }
 
-GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOInit_s *pGPIOPin_i)
+GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOConfig_s *pGPIOPin_i)
 {
     GPIO_DriverRetVal_e driverRetVal;
     GPIO_DriverGPIOLevel_e new_GPIOLevel;
@@ -96,7 +96,7 @@ GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOInit_s *pGPIOPin_i)
     return driverRetVal;
 }
 
-GPIO_DriverRetVal_e gpioDriverReadPin(GPIO_DriverGPIOInit_s* pGPIOPin_i, uint8_t* pData_o)
+GPIO_DriverRetVal_e gpioDriverReadPin(GPIO_DriverGPIOConfig_s* pGPIOPin_i, uint8_t* pData_o)
 {
     *pData_o = (uint8_t)gpio_get_level(pGPIOPin_i->GPIO_Pin_Number);
     return GPIO_DriverRetVal_OK;

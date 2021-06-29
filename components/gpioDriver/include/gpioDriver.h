@@ -47,9 +47,9 @@ typedef struct {
 	uint32_t GPIO_Pin_Number;
 	uint32_t GPIO_Mode; // Input or Output, maybe not needed?
 	uint32_t GPIO_PullUpDown_Selector;
-} GPIO_DriverGPIOInit_s;
+} GPIO_DriverGPIOConfig_s;
 
-static GPIO_DriverGPIOInit_s GPIO_DriverGPIOPeripherals[GPIO_DriverGPIOPeripheral_End] =
+static GPIO_DriverGPIOConfig_s GPIO_DriverGPIOPeripherals[GPIO_DriverGPIOPeripheral_End] =
 {
 	[GPIO_DriverGPIOLed1_o] = {
 		.GPIO_Pin_Port 				= 0,
@@ -80,10 +80,10 @@ static GPIO_DriverGPIOInit_s GPIO_DriverGPIOPeripherals[GPIO_DriverGPIOPeriphera
 //GPIO_DriverRetVal_e gpioDriver_Init(void);
 //GPIO_DriverRetVal_e gpioDriver_DeInit(void);
 
-GPIO_DriverRetVal_e gpioDriverPinInit_Input(GPIO_DriverGPIOInit_s* pGPIOPin_i);
-GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOInit_s* pGPIOPin_i);
-GPIO_DriverRetVal_e gpioDriverPinDeInit(GPIO_DriverGPIOInit_s* pGPIOPin_i);
-GPIO_DriverRetVal_e gpioDriverSetPin_Level(GPIO_DriverGPIOInit_s* pGPIOPin_i, GPIO_DriverGPIOLevel_e eGPIOLevel_i);
-GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOInit_s* pGPIOPin_i);
-GPIO_DriverRetVal_e gpioDriverReadPin(GPIO_DriverGPIOInit_s* pGPIOPin_i, uint8_t* pData_o);
+GPIO_DriverRetVal_e gpioDriverPinInit_Input(GPIO_DriverGPIOConfig_s* pGPIOPin_i);
+GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOConfig_s* pGPIOPin_i);
+GPIO_DriverRetVal_e gpioDriverPinDeInit(GPIO_DriverGPIOConfig_s* pGPIOPin_i);
+GPIO_DriverRetVal_e gpioDriverSetPin_Level(GPIO_DriverGPIOConfig_s* pGPIOPin_i, GPIO_DriverGPIOLevel_e eGPIOLevel_i);
+GPIO_DriverRetVal_e gpioDriverTogglePin(GPIO_DriverGPIOConfig_s* pGPIOPin_i);
+GPIO_DriverRetVal_e gpioDriverReadPin(GPIO_DriverGPIOConfig_s* pGPIOPin_i, uint8_t* pData_o);
 
