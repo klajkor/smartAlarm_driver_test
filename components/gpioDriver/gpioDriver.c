@@ -3,7 +3,29 @@
 GPIO_DriverRetVal_e gpioDriverPinInit_Input(GPIO_DriverGPIOConfig_s *pGPIOPin_i)
 {
     GPIO_DriverRetVal_e driverRetVal;
-    driverRetVal = GPIO_DriverRetVal_OK;
+    gpio_config_t gpio_conf;
+
+    gpio_conf.intr_type = GPIO_INTR_DISABLE;
+    gpio_conf.mode = GPIO_DriverGPIO_MODE_INPUT;
+    gpio_conf.pin_bit_mask = (1ULL << pGPIOPin_i->GPIO_Pin_Number);
+    gpio_conf.pull_up_en = 0;
+    gpio_conf.pull_down_en = 0;
+    if ((pGPIOPin_i->GPIO_PullUpDown_Selector == GPIO_DriverGPIO_PULLUP_ONLY) || (pGPIOPin_i->GPIO_PullUpDown_Selector == GPIO_DriverGPIO_PULLUP_PULLDOWN))
+    {
+        gpio_conf.pull_up_en = 1;
+    }
+    if ((pGPIOPin_i->GPIO_PullUpDown_Selector == GPIO_DriverGPIO_PULLDOWN_ONLY) || (pGPIOPin_i->GPIO_PullUpDown_Selector == GPIO_DriverGPIO_PULLUP_PULLDOWN))
+    {
+        gpio_conf.pull_up_en = 1;
+    }
+    if (gpio_config(&gpio_conf) == ESP_OK)
+    {
+        driverRetVal = GPIO_DriverRetVal_OK;
+    }
+    else
+    {
+        driverRetVal = GPIO_DriverRetVal_NOK;
+    }
 
     return driverRetVal;
 }
@@ -14,7 +36,7 @@ GPIO_DriverRetVal_e gpioDriverPinInit_Output(GPIO_DriverGPIOConfig_s *pGPIOPin_i
     gpio_config_t gpio_conf;
 
     gpio_conf.intr_type = GPIO_INTR_DISABLE;
-    gpio_conf.mode = GPIO_MODE_INPUT_OUTPUT;
+    gpio_conf.mode = GPIO_DriverGPIO_MODE_OUTPUT;
     gpio_conf.pin_bit_mask = (1ULL << pGPIOPin_i->GPIO_Pin_Number);
     gpio_conf.pull_up_en = 0;
     gpio_conf.pull_down_en = 0;
