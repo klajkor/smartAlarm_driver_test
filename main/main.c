@@ -1,6 +1,6 @@
 /**
  * Brief:
- * This test code shows how to 
+ * This test code shows how to
  *
  *
  */
@@ -16,11 +16,9 @@
 
 static const char *TAG = "Driver Test";
 
-
-
 void app_main(void)
 {
     vTaskDelay(100 / portTICK_RATE_MS);
+    ESP_LOGI(TAG, "Create GPIO Driver Test Task");
     xTaskCreate(&gpio_driver_out_task, "gpio_driver_out_task", 2048, NULL, 5, NULL);
 }
-
