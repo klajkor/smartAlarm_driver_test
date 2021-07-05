@@ -2,5 +2,7 @@
 # in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.5)
 
+list(APPEND EXTRA_COMPONENT_DIRS "HAL_Drivers")
+
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(smartAlarm_driver_test)
