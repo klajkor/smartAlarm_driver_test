@@ -7,6 +7,11 @@
 #include <stdio.h>
 #include "driver/ledc.h"
 
+#define PWM_LEDC_TIMER LEDC_TIMER_0
+#define PWM_LEDC_MODE LEDC_LOW_SPEED_MODE
+#define PWM_LEDC_CHANNEL LEDC_CHANNEL_0
+#define PWM_LEDC_DUTY_RES LEDC_TIMER_13_BIT // Set duty resolution to 13 bits
+
 typedef enum
 {
     PWM_DriverRetVal_OK = 0,

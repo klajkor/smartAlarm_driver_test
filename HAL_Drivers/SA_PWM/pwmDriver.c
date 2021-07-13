@@ -4,6 +4,7 @@ PWM_DriverRetVal_e PWM_DriverInitPin(PWM_DriverPinConfig_s *pPWMPin_i)
 {
     PWM_DriverRetVal_e driverRetVal;
     driverRetVal = PWM_DriverRetVal_OK;
+
     return driverRetVal;
 }
 
