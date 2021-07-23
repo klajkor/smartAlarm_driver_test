@@ -14,27 +14,19 @@ static const char tag[] = "uartDriver Test";
 static const int RX_BUF_SIZE = 1024;
 static const int TEST_UART_NUM = UART_NUM_2;
 
+UART_DriverUARTConfig_s UART2_config = {.UART_number = TEST_UART_NUM,
+                                        .UART_baud_rate = 115200,
+                                        .UART_data_bits = UART_DATA_8_BITS,
+                                        .UART_stop_bits = UART_STOP_BITS_1,
+                                        .UART_parity = UART_PARITY_DISABLE,
+                                        .UART_TxBuff_Size = STD_UART_BUF_SIZE,
+                                        .UART_RxBuff_Size = STD_UART_BUF_SIZE,
+                                        .UART_TxGPIO_Pin = GPIO_NUM_27,
+                                        .UART_RxGPIO_Pin = GPIO_NUM_26};
+
 void uart_init(void)
 {
-    /*
-    const uart_config_t uart_config = {
-        .baud_rate = 115200,
-        .data_bits = UART_DATA_8_BITS,
-        .parity = UART_PARITY_DISABLE,
-        .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
-        .rx_flow_ctrl_thresh = 122, //
-    };
-    */
-    UART_DriverUARTConfig_s UART2_config = {.UART_number = TEST_UART_NUM,
-                                            .UART_baud_rate = 115200,
-                                            .UART_data_bits = UART_DATA_8_BITS,
-                                            .UART_stop_bits = UART_STOP_BITS_1,
-                                            .UART_parity = UART_PARITY_DISABLE,
-                                            .UART_TxBuff_Size = STD_UART_BUF_SIZE,
-                                            .UART_RxBuff_Size = STD_UART_BUF_SIZE,
-                                            .UART_TxGPIO_Pin = GPIO_NUM_27,
-                                            .UART_RxGPIO_Pin = GPIO_NUM_26};
+
     if (UART_DriverUARTInit(&UART2_config) == UART_DriverRetVal_OK)
     {
         ESP_LOGI(tag, "UART Init successful");
@@ -59,7 +51,9 @@ void uart_tx_task(void *arg)
     esp_log_level_set(TX_TASK_TAG, ESP_LOG_INFO);
     while (1)
     {
-        uart_sendData(TX_TASK_TAG, "Hello world");
+        UART_DriverSendByte(&UART2_config, 0x31);
+        UART_DriverSendByte(&UART2_config, 0x10);
+        //uart_sendData(TX_TASK_TAG, "Hello world");
         vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
 }
@@ -100,5 +94,4 @@ void run_uart_tests(void)
 
     xTaskCreate(uart_rx_task, "uart_rx_task", 1024 * 2, NULL, configMAX_PRIORITIES, NULL);
     xTaskCreate(uart_tx_task, "uart_tx_task", 1024 * 2, NULL, configMAX_PRIORITIES - 1, NULL);
-    
 }

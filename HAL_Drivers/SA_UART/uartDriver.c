@@ -42,3 +42,19 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
     }
     return ret_val;
 }
+
+UART_DriverRetVal_e UART_DriverSendByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t data_i)
+{
+    UART_DriverRetVal_e ret_val;
+    char data_to_be_sent[2];
+    int sent_bytes;
+    data_to_be_sent[0] = data_i;
+    data_to_be_sent[1] = 0;
+    ret_val = UART_DriverRetVal_OK;
+    sent_bytes = uart_write_bytes(pUARTPeripheral_i->UART_number, data_to_be_sent, 1);
+    if (sent_bytes < 1)
+    {
+        ret_val = UART_DriverRetVal_NOK;
+    }
+    return ret_val;
+}
