@@ -1,0 +1,92 @@
+/*
+* UART Driver for SmartAlarm system
+*/
+
+#pragma once
+
+#include <stdio.h>
+#include "esp_log.h"
+//#include "hal/uart_types.h"
+#include "driver/uart.h"
+#include "driver/gpio.h"
+
+/*
+* ESP32 default UART port pins
+* UART 	    GPIO 	    UART 	GPIO
+* U0_RXD 	GPIO3 	    U0_CTS 	GPIO19
+* U0_TXD 	GPIO1 	    U0_RTS 	GPIO22
+* U1_RXD 	GPIO9 	    U1_CTS 	GPIO6
+* U1_TXD 	GPIO10 	    U1_RTS 	GPIO11
+* U2_RXD 	GPIO16 	    U2_CTS 	GPIO8
+* U2_TXD 	GPIO17 	    U2_RTS 	GPIO7
+*/
+
+/*
+* ESP32 typdefs
+* uart_port_t UART_NUMBER
+* uart_config_t
+*/
+
+#define STD_UART_BUF_SIZE ((int)1024)
+
+typedef enum
+{
+    UART_DriverRetVal_OK = 0,
+    UART_DriverRetVal_NOK,
+    UART_DriverRetVal_End
+} UART_DriverRetVal_e;
+
+typedef enum
+{
+    UART_DriverUARTPeripheral1 = 0,
+    UART_DriverUARTPeripheral2,
+    UART_DriverUARTPeripheral_End
+} UART_DriverUARTPeripheralList_e;
+
+typedef struct
+{
+    uint8_t UART_number;
+    uint32_t UART_baud_rate;
+    uart_word_length_t UART_data_bits;
+    uart_stop_bits_t UART_stop_bits;
+    uart_parity_t UART_parity;
+    int UART_TxBuff_Size;
+    int UART_RxBuff_Size;
+    uint32_t UART_TxGPIO_Pin;
+    uint32_t UART_RxGPIO_Pin;
+} UART_DriverUARTConfig_s;
+
+static UART_DriverUARTConfig_s UART_DriverUARTPeripherals[UART_DriverUARTPeripheral_End] =
+    {
+        [UART_DriverUARTPeripheral1] = {
+            .UART_number = UART_NUM_1,
+            .UART_baud_rate = 115200,
+            .UART_data_bits = UART_DATA_8_BITS,
+            .UART_stop_bits = UART_STOP_BITS_1,
+            .UART_parity = UART_PARITY_DISABLE,
+            .UART_TxBuff_Size = STD_UART_BUF_SIZE,
+            .UART_RxBuff_Size = STD_UART_BUF_SIZE,
+            .UART_TxGPIO_Pin = GPIO_NUM_27,
+            .UART_RxGPIO_Pin = GPIO_NUM_26}};
+
+/*
+* TBD
+static UART_Peripheral_s *UART_DriverGetPeripheralReference(UART_DriverUARTPeripheralList_e uartPeripheral_i)
+{
+    return &UART_DriverUARTPeripherals[uartPeripheral_i].Instance;
+}
+*/
+
+/*
+* TBD
+1. Interrupt handling (Rx interrupt)
+2. Polling mode
+*/
+UART_DriverRetVal_e UART_Driver_MultiInit(UART_DriverUARTConfig_s *pUARTsArray_i, uint8_t UARTsArrayLen_i);
+UART_DriverRetVal_e UART_Driver_MultiDeInit(UART_DriverUARTConfig_s *pUARTsArray_i, uint8_t UARTsArrayLen_i);
+UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral_i);
+UART_DriverRetVal_e UART_DriverUARTDeInit(UART_DriverUARTConfig_s *pUARTPeripheral_i);
+UART_DriverRetVal_e UART_DriverSendByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t data_i);
+UART_DriverRetVal_e UART_DriverSendData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_i, uint16_t length_i);
+UART_DriverRetVal_e UART_DriverReceiveByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o);
+UART_DriverRetVal_e UART_DriverReceiveData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o, uint16_t length_i);
