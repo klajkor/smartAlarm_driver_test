@@ -41,7 +41,18 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
             driver_uart_config.stop_bits = UART_STOP_BITS_1;
             break;
         }
-        driver_uart_config.parity = pUARTPeripheral_i->UART_parity;
+        switch (pUARTPeripheral_i->UART_parity)
+        {
+        case UART_DriverParity_Even:
+            driver_uart_config.parity = UART_PARITY_EVEN;
+            break;
+        case UART_DriverParity_Odd:
+            driver_uart_config.parity = UART_PARITY_ODD;
+            break;
+        default:
+            driver_uart_config.parity = UART_PARITY_DISABLE;
+            break;
+        }
         driver_uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
         driver_uart_config.rx_flow_ctrl_thresh = 122;
     }
@@ -196,4 +207,34 @@ int UART_DriverReceiveData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *
 int UART_DriverReceiveByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o)
 {
     return UART_DriverReceiveData(pUARTPeripheral_i, pData_o, 1);
+}
+
+/**
+ * @brief Multiple UART Driver initialization
+ */
+UART_DriverRetVal_e UART_Driver_MultiInit(UART_DriverUARTConfig_s *pUARTsArray_i, uint8_t UARTsArrayLen_i)
+{
+    UART_DriverRetVal_e ret_val;
+    uint8_t i;
+    ret_val = UART_DriverRetVal_OK;
+    for (i = 0; (i < UARTsArrayLen_i && ret_val == UART_DriverRetVal_OK); i++)
+    {
+        ret_val = UART_DriverUARTInit(&pUARTsArray_i[i]);
+    }
+    return ret_val;
+}
+
+/**
+ * @brief Multiple UART Driver deinitialization
+ */
+UART_DriverRetVal_e UART_Driver_MultiDeInit(UART_DriverUARTConfig_s *pUARTsArray_i, uint8_t UARTsArrayLen_i)
+{
+    UART_DriverRetVal_e ret_val;
+    uint8_t i;
+    ret_val = UART_DriverRetVal_OK;
+    for (i = 0; (i < UARTsArrayLen_i && ret_val == UART_DriverRetVal_OK); i++)
+    {
+        ret_val = UART_DriverUARTDeInit(&pUARTsArray_i[i]);
+    }
+    return ret_val;
 }

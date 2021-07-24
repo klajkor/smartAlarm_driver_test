@@ -13,6 +13,7 @@
 #define TXD_PIN (GPIO_NUM_27)
 #define RXD_PIN (GPIO_NUM_26)
 
+
 void uart_init(void);
 int uart_sendData(const char *logName, const char *data);
 void uart_tx_task(void *arg);

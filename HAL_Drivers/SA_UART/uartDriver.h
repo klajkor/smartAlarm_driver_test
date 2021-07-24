@@ -8,7 +8,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
-//#include "hal/uart_types.h"
 #include "driver/uart.h"
 #include "driver/gpio.h"
 
@@ -42,13 +41,6 @@ typedef enum
     UART_DriverRetVal_End
 } UART_DriverRetVal_e;
 
-typedef enum
-{
-    UART_DriverUARTPeripheral1 = 0,
-    UART_DriverUARTPeripheral2,
-    UART_DriverUARTPeripheral_End
-} UART_DriverUARTPeripheralList_e;
-
 /**
  * @brief UART Driver parity enum
  */
@@ -75,18 +67,6 @@ typedef struct
     uint32_t UART_RxGPIO_Pin;
 } UART_DriverUARTConfig_s;
 
-static UART_DriverUARTConfig_s UART_DriverUARTPeripherals[UART_DriverUARTPeripheral_End] =
-    {
-        [UART_DriverUARTPeripheral1] = {
-            .UART_number = UART_NUM_1,
-            .UART_baud_rate = 115200,
-            .UART_data_bits = UART_DATA_8_BITS,
-            .UART_stop_bits = UART_STOP_BITS_1,
-            .UART_parity = UART_PARITY_DISABLE,
-            .UART_TxBuff_Size = STD_UART_BUF_SIZE,
-            .UART_RxBuff_Size = STD_UART_BUF_SIZE,
-            .UART_TxGPIO_Pin = GPIO_NUM_27,
-            .UART_RxGPIO_Pin = GPIO_NUM_26}};
 
 /*
 * TBD
