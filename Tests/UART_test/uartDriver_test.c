@@ -11,7 +11,7 @@
 
 static const char tag[] = "uartDriver Test";
 
-static const int RX_BUF_SIZE = 1024;
+static const int RX_BUF_SIZE = 511;
 static const int TEST_UART_NUM = UART_NUM_2;
 
 UART_DriverUARTConfig_s UART2_config = {.UART_number = TEST_UART_NUM,
@@ -48,43 +48,54 @@ int uart_sendData(const char *logName, const char *data)
 void uart_tx_task(void *arg)
 {
     static const char *TX_TASK_TAG = "TX_TASK";
+    static const char msg_to_send[] = "Holzkoffer for president";
+    int total_sent_bytes;
+    total_sent_bytes = 0;
     esp_log_level_set(TX_TASK_TAG, ESP_LOG_INFO);
-    while (1)
+    while (total_sent_bytes < 600)
     {
-        UART_DriverSendByte(&UART2_config, 0x31);
-        UART_DriverSendByte(&UART2_config, 0x10);
-        //uart_sendData(TX_TASK_TAG, "Hello world");
+        UART_DriverSendByte(&UART2_config, 0x45);
+        total_sent_bytes++;
+        UART_DriverSendByte(&UART2_config, 0x21);
+        total_sent_bytes++;
+        UART_DriverSendData(&UART2_config, msg_to_send, sizeof(msg_to_send) - 1);
+        total_sent_bytes = total_sent_bytes + (sizeof(msg_to_send) - 1);
+        ESP_LOGI(TX_TASK_TAG, "Sent total %d bytes so far", total_sent_bytes);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
     }
+    ESP_LOGI(TX_TASK_TAG, "UART sending finished");
+    UART_DriverUARTDeInit(&UART2_config);
+    vTaskDelete(NULL);
 }
 
 void uart_rx_task(void *arg)
 {
     static const char *RX_TASK_TAG = "RX_TASK";
-    int rxBytes;
-    size_t buf_ok;
-    uint32_t cnt = 0;
+    int rx_bytes;
+    int total_rx_bytes;
+    total_rx_bytes = 0;
     esp_log_level_set(RX_TASK_TAG, ESP_LOG_INFO);
     uint8_t *data = (uint8_t *)malloc(RX_BUF_SIZE + 1);
-    while (1)
+    while (total_rx_bytes < 512)
     {
-        ESP_ERROR_CHECK(uart_get_buffered_data_len(TEST_UART_NUM, &buf_ok));
-        if (buf_ok > 0)
+
+        rx_bytes = UART_DriverReceiveData(&UART2_config, data, 31);
+        if (rx_bytes > 0)
         {
-            ESP_LOGI(RX_TASK_TAG, "read Begin");
-            rxBytes = uart_read_bytes(TEST_UART_NUM, data, buf_ok, 1000 / portTICK_RATE_MS);
-            if (rxBytes > 0)
-            {
-                data[rxBytes] = 0;
-                ESP_LOGI(RX_TASK_TAG, "Read %d(%d) bytes: '%s'", rxBytes, buf_ok, data);
-                ESP_LOG_BUFFER_HEXDUMP(RX_TASK_TAG, data, rxBytes, ESP_LOG_INFO);
-            }
-            ESP_LOGI(RX_TASK_TAG, "Recv Task cnt=%d.", cnt);
+            data[rx_bytes] = 0;
+            total_rx_bytes = total_rx_bytes + rx_bytes;
+            ESP_LOGI(RX_TASK_TAG, "Read %d bytes: '%s'", rx_bytes, data);
+            ESP_LOG_BUFFER_HEXDUMP(RX_TASK_TAG, data, rx_bytes, ESP_LOG_INFO);
         }
-        cnt++;
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        else
+        {
+            vTaskDelay(100 / portTICK_PERIOD_MS);
+        }
     }
     free(data);
+    ESP_LOGI(RX_TASK_TAG, "UART receiving finished");
+    uart_flush(UART2_config.UART_number);
+    vTaskDelete(NULL);
 }
 
 void run_uart_tests(void)

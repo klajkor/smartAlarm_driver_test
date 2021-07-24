@@ -5,6 +5,8 @@
 #pragma once
 
 #include <stdio.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "esp_log.h"
 //#include "hal/uart_types.h"
 #include "driver/uart.h"
@@ -28,7 +30,11 @@
 */
 
 #define STD_UART_BUF_SIZE ((int)1024)
+#define UART_RX_TICKS_TO_WAIT (pdMS_TO_TICKS(100))
 
+/**
+ * @brief UART Driver function return value enum
+ */
 typedef enum
 {
     UART_DriverRetVal_OK = 0,
@@ -43,12 +49,25 @@ typedef enum
     UART_DriverUARTPeripheral_End
 } UART_DriverUARTPeripheralList_e;
 
+/**
+ * @brief UART Driver parity enum
+ */
+typedef enum
+{
+    UART_DriverParity_Disable = 0x0, /*!< Disable UART parity*/
+    UART_DriverParity_Even = 0x2,    /*!< Enable UART even parity*/
+    UART_DriverParity_Odd = 0x3      /*!< Enable UART odd parity*/
+} UART_DriverUARTParity_e;
+
+/**
+ * @brief UART Driver definition structure
+ */
 typedef struct
 {
     uint8_t UART_number;
     uint32_t UART_baud_rate;
-    uart_word_length_t UART_data_bits;
-    uart_stop_bits_t UART_stop_bits;
+    uint8_t UART_data_bits;
+    uint8_t UART_stop_bits;
     uart_parity_t UART_parity;
     int UART_TxBuff_Size;
     int UART_RxBuff_Size;
@@ -87,6 +106,6 @@ UART_DriverRetVal_e UART_Driver_MultiDeInit(UART_DriverUARTConfig_s *pUARTsArray
 UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral_i);
 UART_DriverRetVal_e UART_DriverUARTDeInit(UART_DriverUARTConfig_s *pUARTPeripheral_i);
 UART_DriverRetVal_e UART_DriverSendByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t data_i);
-UART_DriverRetVal_e UART_DriverSendData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_i, uint16_t length_i);
-UART_DriverRetVal_e UART_DriverReceiveByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o);
-UART_DriverRetVal_e UART_DriverReceiveData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o, uint16_t length_i);
+UART_DriverRetVal_e UART_DriverSendData(UART_DriverUARTConfig_s *pUARTPeripheral_i, char *pData_i, uint16_t length_i);
+int UART_DriverReceiveData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o, uint16_t length_i);
+int UART_DriverReceiveByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o);
