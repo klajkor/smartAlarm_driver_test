@@ -1,7 +1,14 @@
 {
-  "C_Cpp.intelliSenseEngine": "Tag Parser",
-  "idf.port": "/dev/ttyUSB0",
-  "idf.flashType": "UART",
-  "idf.portWin": "COM9",
-  "editor.formatOnSave": true
+    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "idf.port": "/dev/ttyUSB0",
+    "idf.flashType": "UART",
+    "idf.portWin": "COM14",
+    "C_Cpp.clang_format_style": "{ BasedOnStyle: Microsoft, AlignConsecutiveDeclarations: true, IndentWidth: 4, Standard: Cpp11, ColumnLimit: 119 }",
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "array": "c",
+        "vector": "c",
+        "xstring": "c",
+        "xutility": "c"
+    }
 }

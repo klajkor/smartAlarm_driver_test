@@ -9,4 +9,4 @@
 #include "SIM800Driver.h"
 
 
-void sim800_driver_test(void);
+SIM800_DriverRetVal_e sim800_driver_test(void);
