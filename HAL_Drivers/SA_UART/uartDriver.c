@@ -8,8 +8,8 @@ static const char tag[] = "HAL uartDriver";
 UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral_i)
 {
     UART_DriverRetVal_e ret_val;
-    esp_err_t esp_ret_val;
-    uart_config_t driver_uart_config;
+    esp_err_t           esp_ret_val;
+    uart_config_t       driver_uart_config;
     if (pUARTPeripheral_i != NULL)
     {
         ret_val = UART_DriverRetVal_OK;
@@ -25,8 +25,12 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
         case 7:
             driver_uart_config.data_bits = UART_DATA_7_BITS;
             break;
+        case 8:
+            driver_uart_config.data_bits = UART_DATA_8_BITS;
+            break;
         default:
             driver_uart_config.data_bits = UART_DATA_8_BITS;
+            ret_val = UART_DriverRetVal_NOK;
             break;
         }
         switch (pUARTPeripheral_i->UART_stop_bits)
@@ -39,6 +43,7 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
             break;
         default:
             driver_uart_config.stop_bits = UART_STOP_BITS_1;
+            ret_val = UART_DriverRetVal_NOK;
             break;
         }
         switch (pUARTPeripheral_i->UART_parity)
@@ -49,8 +54,12 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
         case UART_DriverParity_Odd:
             driver_uart_config.parity = UART_PARITY_ODD;
             break;
+        case UART_DriverParity_Disable:
+            driver_uart_config.parity = UART_PARITY_DISABLE;
+            break;
         default:
             driver_uart_config.parity = UART_PARITY_DISABLE;
+            ret_val = UART_DriverRetVal_NOK;
             break;
         }
         driver_uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
@@ -71,7 +80,8 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
     }
     if (ret_val == UART_DriverRetVal_OK)
     {
-        esp_ret_val = uart_set_pin(pUARTPeripheral_i->UART_number, pUARTPeripheral_i->UART_TxGPIO_Pin, pUARTPeripheral_i->UART_RxGPIO_Pin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+        esp_ret_val = uart_set_pin(pUARTPeripheral_i->UART_number, pUARTPeripheral_i->UART_TxGPIO_Pin,
+                                   pUARTPeripheral_i->UART_RxGPIO_Pin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
         if (esp_ret_val != ESP_OK)
         {
             ret_val = UART_DriverRetVal_NOK;
@@ -81,7 +91,8 @@ UART_DriverRetVal_e UART_DriverUARTInit(UART_DriverUARTConfig_s *pUARTPeripheral
 
     if (ret_val == UART_DriverRetVal_OK)
     {
-        esp_ret_val = uart_driver_install(pUARTPeripheral_i->UART_number, pUARTPeripheral_i->UART_RxBuff_Size, pUARTPeripheral_i->UART_TxBuff_Size, 0, NULL, 0);
+        esp_ret_val = uart_driver_install(pUARTPeripheral_i->UART_number, pUARTPeripheral_i->UART_RxBuff_Size,
+                                          pUARTPeripheral_i->UART_TxBuff_Size, 0, NULL, 0);
         if (esp_ret_val != ESP_OK)
         {
             ret_val = UART_DriverRetVal_NOK;
@@ -96,7 +107,8 @@ UART_DriverRetVal_e UART_DriverUARTDeInit(UART_DriverUARTConfig_s *pUARTPeripher
     UART_DriverRetVal_e ret_val;
     if (pUARTPeripheral_i != NULL)
     {
-        uart_set_pin(pUARTPeripheral_i->UART_number, pUARTPeripheral_i->UART_TxGPIO_Pin, pUARTPeripheral_i->UART_RxGPIO_Pin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+        uart_set_pin(pUARTPeripheral_i->UART_number, pUARTPeripheral_i->UART_TxGPIO_Pin,
+                     pUARTPeripheral_i->UART_RxGPIO_Pin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
         if (uart_driver_delete(pUARTPeripheral_i->UART_number) == ESP_OK)
         {
             ret_val = UART_DriverRetVal_OK;
@@ -116,8 +128,8 @@ UART_DriverRetVal_e UART_DriverUARTDeInit(UART_DriverUARTConfig_s *pUARTPeripher
 UART_DriverRetVal_e UART_DriverSendByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t data_i)
 {
     UART_DriverRetVal_e ret_val;
-    char data_to_be_sent[2];
-    int sent_bytes;
+    char                data_to_be_sent[2];
+    int                 sent_bytes;
     data_to_be_sent[0] = data_i;
     data_to_be_sent[1] = 0;
     if (pUARTPeripheral_i != NULL)
@@ -142,7 +154,7 @@ UART_DriverRetVal_e UART_DriverSendByte(UART_DriverUARTConfig_s *pUARTPeripheral
 UART_DriverRetVal_e UART_DriverSendData(UART_DriverUARTConfig_s *pUARTPeripheral_i, char *pData_i, uint16_t length_i)
 {
     UART_DriverRetVal_e ret_val;
-    int sent_bytes;
+    int                 sent_bytes;
     if (pUARTPeripheral_i != NULL && pData_i != NULL)
     {
         sent_bytes = uart_write_bytes(pUARTPeripheral_i->UART_number, (char *)pData_i, length_i);
@@ -164,8 +176,8 @@ UART_DriverRetVal_e UART_DriverSendData(UART_DriverUARTConfig_s *pUARTPeripheral
 
 int UART_DriverReceiveData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *pData_o, uint16_t length_i)
 {
-    int ret_length;
-    int received_bytes;
+    int    ret_length;
+    int    received_bytes;
     size_t bytes_in_buffer;
     if (pUARTPeripheral_i != NULL && pData_o != NULL && length_i > 0)
     {
@@ -177,7 +189,8 @@ int UART_DriverReceiveData(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *
                 {
                     length_i = bytes_in_buffer;
                 }
-                received_bytes = uart_read_bytes(pUARTPeripheral_i->UART_number, pData_o, length_i, UART_RX_TICKS_TO_WAIT);
+                received_bytes =
+                    uart_read_bytes(pUARTPeripheral_i->UART_number, pData_o, length_i, UART_RX_TICKS_TO_WAIT);
                 if (received_bytes >= 0)
                 {
                     ret_length = received_bytes;
@@ -215,7 +228,7 @@ int UART_DriverReceiveByte(UART_DriverUARTConfig_s *pUARTPeripheral_i, uint8_t *
 UART_DriverRetVal_e UART_Driver_MultiInit(UART_DriverUARTConfig_s *pUARTsArray_i, uint8_t UARTsArrayLen_i)
 {
     UART_DriverRetVal_e ret_val;
-    uint8_t i;
+    uint8_t             i;
     ret_val = UART_DriverRetVal_OK;
     for (i = 0; (i < UARTsArrayLen_i && ret_val == UART_DriverRetVal_OK); i++)
     {
@@ -230,7 +243,7 @@ UART_DriverRetVal_e UART_Driver_MultiInit(UART_DriverUARTConfig_s *pUARTsArray_i
 UART_DriverRetVal_e UART_Driver_MultiDeInit(UART_DriverUARTConfig_s *pUARTsArray_i, uint8_t UARTsArrayLen_i)
 {
     UART_DriverRetVal_e ret_val;
-    uint8_t i;
+    uint8_t             i;
     ret_val = UART_DriverRetVal_OK;
     for (i = 0; (i < UARTsArrayLen_i && ret_val == UART_DriverRetVal_OK); i++)
     {
